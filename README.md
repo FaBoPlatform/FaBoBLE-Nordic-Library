@@ -4,7 +4,7 @@
 
 This is a library for FaBo BLE Brick.
 
-# BLE113
+# BLE
 
 Nordic's ble module.
 
