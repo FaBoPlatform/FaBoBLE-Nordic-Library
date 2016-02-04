@@ -13,6 +13,8 @@ NordicBLE	KEYWORD1
 #######################################
 
 init	KEYWORD2
+tick	KEYWORD2
+sd_ble_enable	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
