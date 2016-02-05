@@ -6,7 +6,8 @@
 #include <SoftwareSerial.h>
 #include <fabo-nordic.h>
 
-NordicBLE faboBLE;
+SoftwareSerial serial(2, 3);
+FaboBLE faboBLE(serial);
 #define buttonPin A0 // ボタンピン
 
 // ボタンの押下状況取得用
@@ -20,17 +21,21 @@ void setup()
   // ボタンピンを入力用に設定
   pinMode(buttonPin, INPUT);
 
+  faboBLE.setDebug();
   faboBLE.init();
 }
 
 void loop()
 {
+  // BLE内部処理のためloop内で呼び出してください
+  faboBLE.tick();
   // ボタンの押下状況を取得
   buttonState = digitalRead(buttonPin);
 
   // ボタン押下判定
   if (buttonState == HIGH && isFirst == false) {
-    isFirst == true;
+    isFirst = true;
+    faboBLE.scan();
     Serial.println("Button pressed.");
   } else {
     isFirst = false;
