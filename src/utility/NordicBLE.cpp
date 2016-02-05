@@ -26,21 +26,25 @@ void NordicBLE::tick() {
 		// Debug print
 		if (debug) {
 			Debug.println("\n*Response");
-			Serial.write("typ:");
-			Serial.println(data.type, HEX);
-			Serial.write("cmd:");
-			Serial.println(data.command, HEX);
-			Serial.write("len:");
-			Serial.println(data.len, DEC);
-			Serial.write("dat:");
+			Debug.write("typ:");
+			Debug.println(data.type, HEX);
+			Debug.write("cmd:");
+			Debug.println(data.command, HEX);
+			Debug.write("len:");
+			Debug.println(data.len, DEC);
+			Debug.write("dat:");
 			for (int i=0; i<data.len; i++) {
-				Serial.print(data.data[i], HEX);
+				Debug.print(data.data[i], HEX);
 				if (i == data.len-1) {
-					Serial.println("");
+					Debug.println("");
 				} else {
-					Serial.print(",");
+					Debug.print(",");
 				}
 		  }
+		}
+		// send event to handler
+		if (on_event) {
+			on_event(data);
 		}
 	}
 }

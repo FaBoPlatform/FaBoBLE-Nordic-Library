@@ -6,7 +6,9 @@
 # Datatypes (KEYWORD1)
 #######################################
 
+FaboBLE	KEYWORD1
 NordicBLE	KEYWORD1
+SerialParser	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
@@ -14,7 +16,10 @@ NordicBLE	KEYWORD1
 
 init	KEYWORD2
 tick	KEYWORD2
+scan	KEYWORD2
+setDebug	KEYWORD2
 sd_ble_enable	KEYWORD2
+sd_ble_gap_scan_start	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

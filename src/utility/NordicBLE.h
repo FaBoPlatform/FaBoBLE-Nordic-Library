@@ -17,7 +17,6 @@ private:
 		SoftwareSerial *serial;
 	#endif
 	SerialParser *parser;
-	
 	void send_command(byte type, byte *data, int size);
 public:
 	#ifdef USE_HARDWARE_SERIAL
@@ -32,6 +31,8 @@ public:
 	//// Softdevice Commands ////
 	void sd_ble_enable(uint8_t service_changed = 0, uint32_t attr_tab_size = 0);
 	void sd_ble_gap_scan_start();
+	// event handler
+	void (*on_event)(SerialParser::CommandData &data);
 };
 
 #endif
