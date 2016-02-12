@@ -3,20 +3,27 @@
 
 #include <Arduino.h>
 #include <SoftwareSerial.h>
-#include "SerialParser.h"
+class CommandParser;
 
 #define NRF_BAUD_RATE 115200
 #define Debug Serial
 
 class NordicBLE
 {
+public:
+	struct CommandData {
+		int len;
+		byte type;
+		byte command;
+		byte data[50];
+	};
 private:
 	#ifdef USE_HARDWARE_SERIAL
 		HardwareSerial *serial;
 	#else
 		SoftwareSerial *serial;
 	#endif
-	SerialParser *parser;
+	CommandParser *parser;
 	void send_command(byte type, byte *data, int size);
 public:
 	#ifdef USE_HARDWARE_SERIAL
@@ -32,7 +39,7 @@ public:
 	void sd_ble_enable(uint8_t service_changed = 0, uint32_t attr_tab_size = 0);
 	void sd_ble_gap_scan_start();
 	// event handler
-	void (*on_event)(SerialParser::CommandData &data);
+	void (*on_event)(CommandData &data);
 };
 
 #endif

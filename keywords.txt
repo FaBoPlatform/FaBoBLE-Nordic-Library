@@ -8,7 +8,7 @@
 
 FaboBLE	KEYWORD1
 NordicBLE	KEYWORD1
-SerialParser	KEYWORD1
+CommandParser	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)

@@ -1,8 +1,9 @@
-#ifndef SerialParser_h
-#define SerialParser_h
+#ifndef CommandParser_h
+#define CommandParser_h
 
 #include <Arduino.h>
 #include <SoftwareSerial.h>
+#include "NordicBLE.h"
 
 // #define USE_HARDWARE_SERIAL
 
@@ -10,16 +11,8 @@
 #define BUFF_SIZE 10
 #define Debug Serial
 
-class SerialParser
+class CommandParser
 {
-public:
-	struct CommandData {
-		int len;
-		byte type;
-		byte command;
-		byte data[50];
-	};
-
 private:
 	#ifdef USE_HARDWARE_SERIAL
 		HardwareSerial *serial;
@@ -28,7 +21,7 @@ private:
 	#endif
 	int pos = 0;
 	bool eod = false;
-	CommandData dataBuff[BUFF_SIZE];
+	NordicBLE::CommandData dataBuff[BUFF_SIZE];
 	int dataCount = 0;
 	int dataIn = 0;
 	int dataOut = 0;
@@ -36,12 +29,12 @@ private:
 
 public:
 	#ifdef USE_HARDWARE_SERIAL
-		SerialParser(HardwareSerial *serial);
+		CommandParser(HardwareSerial *serial);
 	#else
-		SerialParser(SoftwareSerial *serial);
+		CommandParser(SoftwareSerial *serial);
 	#endif
 	void tick();
-	bool getCommand(CommandData *out);
+	bool getCommand(NordicBLE::CommandData &out);
 };
 
 #endif

@@ -6,7 +6,7 @@
 #include <SoftwareSerial.h>
 #include <fabo-nordic.h>
 
-SoftwareSerial serial(2, 3);
+SoftwareSerial serial(12, 13);
 FaboBLE faboBLE(serial);
 #define buttonPin A0 // ボタンピン
 

@@ -1,32 +1,32 @@
-#include "SerialParser.h"
+#include "CommandParser.h"
 
 // initalize
 #ifdef USE_HARDWARE_SERIAL
-	SerialParser::SerialParser(HardwareSerial *serial)
+	CommandParser::CommandParser(HardwareSerial *serial)
 		:serial(serial) {
 	}
 #else
-	SerialParser::SerialParser(SoftwareSerial *serial)
+	CommandParser::CommandParser(SoftwareSerial *serial)
 		:serial(serial) {
 	}
 #endif
 
 //
-void SerialParser::tick() {
+void CommandParser::tick() {
 	#ifndef USE_HARDWARE_SERIAL
 	if (serial->overflow()) {
 		// TODO: fix this!
 		Debug.println("\nSoftwareSerial overflow!");
 	}
 	#endif
-	if (serial->available()) {
+	while (serial->available()) {
 		char c = serial->read();
 		// skip broken data
 		if (broken) {
 			pos = 0;
-			return;
+			break;
 		}
-		CommandData &data = dataBuff[dataIn];
+		NordicBLE::CommandData &data = dataBuff[dataIn];
 		switch (pos++) {
 			// packet length: 2byte
 			case 0:
@@ -59,7 +59,7 @@ void SerialParser::tick() {
 					dataCount++;
 					dataIn++;
 					dataIn %= BUFF_SIZE;
-					// command buffer overflow!
+					// command buffer is overflow!
 					if (dataIn == dataOut) {
 						Debug.println("\nOverflow!");
 						delay(100);
@@ -68,14 +68,13 @@ void SerialParser::tick() {
 				}
 				break;
 		}
-	} else {
-		broken = false;
 	}
+	broken = false;
 }
 
-bool SerialParser::getCommand(CommandData *out) {
+bool CommandParser::getCommand(NordicBLE::CommandData &out) {
 	if (dataCount == 0) return false;
-	memcpy(out, &dataBuff[dataOut++], sizeof(CommandData));
+	memcpy(&out, &dataBuff[dataOut++], sizeof(NordicBLE::CommandData));
 	dataOut %= BUFF_SIZE;
 	dataCount--;
 	return true;

@@ -3,7 +3,7 @@
 #ifdef USE_HARDWARE_SERIAL
 	FaboBLE::FaboBLE(HardwareSerial &serial) {
 		ble = new NordicBLE(serial);
-		ble->on_event = onEventHandler;
+		ble->on_event = &FaboBLE::onEventHandler;
 	}
 #else
 	FaboBLE::FaboBLE(SoftwareSerial &serial) {
@@ -12,7 +12,7 @@
 	}
 #endif
 
-void FaboBLE::onEventHandler(SerialParser::CommandData &data) {
+void FaboBLE::onEventHandler(NordicBLE::CommandData &data) {
 	// BLE_GAP_EVT_ADV_REPORT
 	if (data.command == 0x1b) {
 		// TODO: send this info to the user

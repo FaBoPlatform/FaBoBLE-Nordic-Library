@@ -1,4 +1,5 @@
 #include "NordicBLE.h"
+#include "CommandParser.h"
 
 // initalize
 #ifdef USE_HARDWARE_SERIAL
@@ -6,14 +7,14 @@
 		:serial(&serial)
 	{
 		serial.begin(NRF_BAUD_RATE);
-		parser = new SerialParser(&serial);
+		parser = new CommandParser(&serial);
 	}
 #else
 	NordicBLE::NordicBLE(SoftwareSerial &serial)
 		:serial(&serial)
 	{
 		serial.begin(NRF_BAUD_RATE);
-		parser = new SerialParser(&serial);
+		parser = new CommandParser(&serial);
 	}
 #endif
 
@@ -21,8 +22,8 @@
 // tick
 void NordicBLE::tick() {
 	parser->tick();
-	SerialParser::CommandData data;
-	if (parser->getCommand(&data)) {
+	CommandData data;
+	if (parser->getCommand(data)) {
 		// Debug print
 		if (debug) {
 			Debug.println("\n*Response");

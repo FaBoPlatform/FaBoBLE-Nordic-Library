@@ -6,7 +6,7 @@ class FaboBLE
 {
 private:
 	NordicBLE *ble;
-	static void onEventHandler(SerialParser::CommandData &data);
+	static void onEventHandler(NordicBLE::CommandData &data);
 public:
 	#ifdef USE_HARDWARE_SERIAL
 		FaboBLE(HardwareSerial &serial);
