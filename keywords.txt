@@ -20,6 +20,7 @@ scan	KEYWORD2
 setDebug	KEYWORD2
 sd_ble_enable	KEYWORD2
 sd_ble_gap_scan_start	KEYWORD2
+onScanned	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

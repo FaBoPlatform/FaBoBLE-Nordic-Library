@@ -44,8 +44,8 @@ void NordicBLE::tick() {
 		  }
 		}
 		// send event to handler
-		if (on_event) {
-			on_event(data);
+		if (handler) {
+			handler->nrfReceive(data);
 		}
 	}
 }

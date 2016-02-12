@@ -3,10 +3,12 @@
 
 #include <Arduino.h>
 #include <SoftwareSerial.h>
-class CommandParser;
 
 #define NRF_BAUD_RATE 115200
 #define Debug Serial
+
+class CommandParser;
+class NordicEventHandler;
 
 class NordicBLE
 {
@@ -39,7 +41,13 @@ public:
 	void sd_ble_enable(uint8_t service_changed = 0, uint32_t attr_tab_size = 0);
 	void sd_ble_gap_scan_start();
 	// event handler
-	void (*on_event)(CommandData &data);
+	NordicEventHandler *handler;
+};
+
+class NordicEventHandler
+{
+public:
+	virtual void nrfReceive(NordicBLE::CommandData &data) {};
 };
 
 #endif
