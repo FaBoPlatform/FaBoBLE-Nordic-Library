@@ -26,7 +26,12 @@ public:
 	void init(void);
 	void scan(void);
 	void tick(void);
+	void startAdvertise(void);
+	void setBaseUUID(uint8_t *uuid);
+	void addService(uint16_t uuid, bool SIGUUID = false, bool primary = true);
+	void addCharacteristic(uint8_t handle, byte *data, uint8_t dataLen, uint16_t uuid, bool SIGUUID = false);
 	void setDebug(bool flg = true);
 	// event handler
 	void (*onScanned)(ScanData &data);
+	void (*onServiceAdded)(uint16_t handle, uint8_t error);
 };

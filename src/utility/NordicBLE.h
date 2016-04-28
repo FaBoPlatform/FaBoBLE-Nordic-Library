@@ -19,6 +19,15 @@ public:
 		byte command;
 		byte data[50];
 	};
+	struct GattCharProps {
+		uint8_t broadcast       :1; /**< Broadcasting of the value permitted. */
+		uint8_t read            :1; /**< Reading the value permitted. */
+		uint8_t write_wo_resp   :1; /**< Writing the value with Write Command permitted. */
+		uint8_t write           :1; /**< Writing the value with Write Request permitted. */
+		uint8_t notify          :1; /**< Notications of the value permitted. */
+		uint8_t indicate        :1; /**< Indications of the value permitted. */
+		uint8_t auth_signed_wr  :1; /**< Writing the value with Signed Write Command permitted. */
+	};
 private:
 	#ifdef USE_HARDWARE_SERIAL
 		HardwareSerial *serial;
@@ -39,7 +48,12 @@ public:
 	bool debug = false;
 	//// Softdevice Commands ////
 	void sd_ble_enable(uint8_t service_changed = 0, uint32_t attr_tab_size = 0);
+	void sd_ble_uuid_vs_add(uint8_t *uuid);
+	void sd_ble_gap_adv_data_set(byte *adv, uint8_t len);
+	void sd_ble_gap_adv_start();
 	void sd_ble_gap_scan_start();
+	void sd_ble_gatts_service_add(uint8_t service_type, uint8_t uuid_type, uint16_t uuid);
+	void sd_ble_gatts_characteristic_add(uint16_t service_handle, GattCharProps &char_props, uint8_t uuid_type, uint16_t uuid, byte *user_data, uint16_t data_len);
 	// event handler
 	NordicEventHandler *handler;
 };

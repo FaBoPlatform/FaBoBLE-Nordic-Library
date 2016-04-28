@@ -53,6 +53,13 @@ void FaboBLE::nrfReceive(NordicBLE::CommandData &data) {
 			onScanned(scan);
 		}
 	}
+	if (data.command == 0xA0) {
+		if (onServiceAdded) {
+			uint16_t handle = data.data[4] | (data.data[5] << 8);
+			onServiceAdded(handle, data.data[0]);
+		}
+	}
+
 }
 
 void FaboBLE::init(void) {
@@ -69,4 +76,26 @@ void FaboBLE::tick(void) {
 
 void FaboBLE::setDebug(bool flg) {
 	ble->debug = flg;
+}
+
+void FaboBLE::startAdvertise(void) {
+	ble->sd_ble_gap_adv_start();
+}
+
+void FaboBLE::setBaseUUID(uint8_t *uuid) {
+	ble->sd_ble_uuid_vs_add(uuid);
+}
+
+void FaboBLE::addService(uint16_t uuid, bool SIGUUID, bool primary) {
+	uint8_t serviceType = primary ? 0x01 : 0x02;
+	uint8_t uuidType = SIGUUID ? 0x01 : 0x02;
+	ble->sd_ble_gatts_service_add(serviceType, uuidType, uuid);
+}
+
+void FaboBLE::addCharacteristic(uint8_t handle, byte *data, uint8_t dataLen, uint16_t uuid, bool SIGUUID) {
+	// TODO:
+	NordicBLE::GattCharProps props;
+	props.read = 1;
+	uint8_t uuidType = SIGUUID ? 0x01 : 0x02;
+	ble->sd_ble_gatts_characteristic_add(handle, props, uuidType, uuid, data, dataLen);
 }
