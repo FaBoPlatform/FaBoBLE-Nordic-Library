@@ -8,63 +8,65 @@
 
 SoftwareSerial serial(12, 13);
 FaboBLE faboBLE(serial);
-#define buttonPin A0 // ボタンピン
 
-// ボタンの押下状況取得用
-int buttonState = 0;
-bool isFirst = false;
+// 初期化完了イベント
+void onReady(FaboBLE::VersionInfo ver, int8_t error)
+{
+  Serial.println(F("\n*onReady"));
+  Serial.print(F("CompanyID: "));
+  Serial.println(ver.companyID, HEX);
+  Serial.print(F("FirmwareID: "));
+  Serial.println(ver.firmwareID, HEX);
+  Serial.print(F("LMPVersion: "));
+  Serial.println(ver.lmp);
+  Serial.print(F("Error: "));
+  Serial.println(error, HEX);
+  // Scan開始
+  faboBLE.scan();
+}
 
 // Scan時のイベントハンドラ
 void onScanned(FaboBLE::ScanData &data)
 {
-  Serial.println("\n*BLE_GAP_EVT_ADV_REPORT");
-  Serial.write("Connection Handle:");
-  Serial.print(data.handle, HEX);
-  Serial.write("\nAddress Type:");
+  Serial.println(F("\n*BLE_GAP_EVT_ADV_REPORT"));
+  Serial.print(F("Connection Handle:"));
+  Serial.println(data.handle, HEX);
+  Serial.print(F("Address Type:"));
   Serial.println(data.addressType, HEX);
-  Serial.write("Address:");
+  Serial.print(F("Address:"));
   for (int i=0; i<6; i++) {
     Serial.print(data.address[i], HEX);
+    Serial.print(F(" "));
   }
-  Serial.write("\nRSSI:");
+  Serial.print(F("\nRSSI:"));
   Serial.println(data.RSSI, DEC);
-  Serial.write("Flags:");
+  Serial.print(F("Flags:"));
   Serial.println(data.flags, HEX);
-  Serial.write("DataLen:");
+  Serial.print(F("DataLen:"));
   Serial.println(data.dataLen, DEC);
-  Serial.write("Data:");
+  Serial.print(F("Data:"));
   for (int i=0; i<data.dataLen; i++) {
     Serial.print(data.data[i], HEX);
+    Serial.print(F(" "));
   }
-  Serial.write("\n");
+  Serial.print(F("\n"));
 }
 
 void setup()
 {
   Serial.begin(9600);
 
-  // ボタンピンを入力用に設定
-  pinMode(buttonPin, INPUT);
-
-  //  faboBLE.setDebug();
-  faboBLE.init();
+  // Debugモードでログが詳細に表示されます
+  //faboBLE.setDebug();
+  // イベントハンドラ登録
+  faboBLE.onReady = onReady;
   faboBLE.onScanned = onScanned;
-  delay(100);
+  // 初期化
+  faboBLE.init();
 }
 
 void loop()
 {
   // BLE内部処理のためloop内で呼び出してください
   faboBLE.tick();
-  // ボタンの押下状況を取得
-  buttonState = digitalRead(buttonPin);
-
-  // ボタン押下判定
-  if (buttonState == HIGH && isFirst == false) {
-    isFirst = true;
-    faboBLE.scan();
-    Serial.println("Button pressed.");
-  } else {
-    isFirst = false;
-  }
 }

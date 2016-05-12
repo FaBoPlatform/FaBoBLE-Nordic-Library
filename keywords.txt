@@ -6,6 +6,7 @@
 # Datatypes (KEYWORD1)
 #######################################
 
+fabo-nordic	KEYWORD1
 FaboBLE	KEYWORD1
 NordicBLE	KEYWORD1
 CommandParser	KEYWORD1
@@ -17,10 +18,25 @@ CommandParser	KEYWORD1
 init	KEYWORD2
 tick	KEYWORD2
 scan	KEYWORD2
+startAdvertise	KEYWORD2
+addService	KEYWORD2
+addCharacteristic	KEYWORD2
 setDebug	KEYWORD2
-sd_ble_enable	KEYWORD2
-sd_ble_gap_scan_start	KEYWORD2
+onReady	KEYWORD2
+onConnected	KEYWORD2
+onDisconnected	KEYWORD2
 onScanned	KEYWORD2
+onServiceAdded	KEYWORD2
+onCharacteristicAdded	KEYWORD2
+sd_ble_enable	KEYWORD2
+sd_ble_uuid_vs_add	KEYWORD2
+sd_ble_version_get	KEYWORD2
+sd_ble_gap_adv_data_set	KEYWORD2
+sd_ble_gap_device_name_set	KEYWORD2
+sd_ble_gap_adv_start	KEYWORD2
+sd_ble_gap_scan_start	KEYWORD2
+sd_ble_gatts_service_add	KEYWORD2
+sd_ble_gatts_characteristic_add	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)

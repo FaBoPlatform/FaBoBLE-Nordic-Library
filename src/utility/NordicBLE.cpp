@@ -25,24 +25,26 @@ void NordicBLE::tick() {
 	CommandData data;
 	if (parser->getCommand(data)) {
 		// Debug print
+		#ifdef DEBUG_PRINT
 		if (debug) {
-			Debug.println("\n*Response");
-			Debug.write("typ:");
+			Debug.println(F("\n*Response"));
+			Debug.print(F("typ:"));
 			Debug.println(data.type, HEX);
-			Debug.write("cmd:");
+			Debug.print(F("cmd:"));
 			Debug.println(data.command, HEX);
-			Debug.write("len:");
+			Debug.print(F("len:"));
 			Debug.println(data.len, DEC);
-			Debug.write("dat:");
+			Debug.print(F("dat:"));
 			for (int i=0; i<data.len; i++) {
 				Debug.print(data.data[i], HEX);
 				if (i == data.len-1) {
-					Debug.println("");
+					Debug.println(F(""));
 				} else {
-					Debug.print(",");
+					Debug.print(F(","));
 				}
 		  }
 		}
+		#endif
 		// send event to handler
 		if (handler) {
 			handler->nrfReceive(data);
@@ -51,15 +53,17 @@ void NordicBLE::tick() {
 }
 
 // sd_ble_enable
+const uint8_t NordicBLE::sd_ble_enable_cmd = 0x60;
 void NordicBLE::sd_ble_enable(uint8_t service_changed, uint32_t attr_tab_size) {
 	byte data[] = {
 		0x01, service_changed, 0x00, 0x00, 0x00, 0x00
 	};
 	memcpy(&data[2], &attr_tab_size, 4);
-	this->send_command(0x60, data, 6);
+	this->send_command(sd_ble_enable_cmd, data, 6);
 }
 
 // sd_ble_uuid_vs_add
+const uint8_t NordicBLE::sd_ble_uuid_vs_add_cmd = 0x63;
 void NordicBLE::sd_ble_uuid_vs_add(uint8_t *uuid) {
 	byte data[] = {
 		0x01,
@@ -68,10 +72,18 @@ void NordicBLE::sd_ble_uuid_vs_add(uint8_t *uuid) {
 		0x01
 	};
 	memcpy(&data[1], uuid, 16);
-	this->send_command(0x63, data, 18);
+	this->send_command(sd_ble_uuid_vs_add_cmd, data, 18);
+}
+
+// sd_ble_version_get
+const uint8_t NordicBLE::sd_ble_version_get_cmd = 0x66;
+void NordicBLE::sd_ble_version_get() {
+	byte data[] = {0x01};
+	this->send_command(sd_ble_version_get_cmd, data, 1);
 }
 
 // sd_ble_gap_adv_data_set
+const uint8_t NordicBLE::sd_ble_gap_adv_data_set_cmd = 0x72;
 void NordicBLE::sd_ble_gap_adv_data_set(byte *adv, uint8_t len) {
 	byte data[len+4];
 	uint8_t flg = 1;
@@ -81,7 +93,21 @@ void NordicBLE::sd_ble_gap_adv_data_set(byte *adv, uint8_t len) {
 	flg = 0;
 	memcpy(&data[len+2], &flg, 1);
 	memcpy(&data[len+3], &flg, 1);
-	this->send_command(0x72, data, len+4);
+	this->send_command(sd_ble_gap_adv_data_set_cmd, data, len+4);
+}
+
+// sd_ble_gap_device_name_set
+const uint8_t NordicBLE::sd_ble_gap_device_name_set_cmd = 0x7C;
+void NordicBLE::sd_ble_gap_device_name_set(const char *name) {
+	uint16_t len = strlen(name);
+	byte data[len+4];
+	uint8_t flg = 0;
+	memcpy(&data[0], &flg, 1);
+	memcpy(&data[1], &len, 2);
+	flg = 1;
+	memcpy(&data[3], &flg, 1);
+	memcpy(&data[4], name, len);
+	this->send_command(sd_ble_gap_device_name_set_cmd, data, len+4);
 }
 
 // sd_ble_gap_adv_start
@@ -108,15 +134,17 @@ void NordicBLE::sd_ble_gap_scan_start() {
 }
 
 // sd_ble_gatts_service_add
+const uint8_t NordicBLE::sd_ble_gatts_service_add_cmd = 0xA0;
 void NordicBLE::sd_ble_gatts_service_add(uint8_t service_type, uint8_t uuid_type, uint16_t uuid) {
 	byte data[] = {
 		service_type, 0x01, 0x00, 0x00, uuid_type, 0x01
 	};
 	memcpy(&data[2], &uuid, 2);
-	this->send_command(0xA0, data, 6);
+	this->send_command(sd_ble_gatts_service_add_cmd, data, 6);
 }
 
 // sd_ble_gatts_characteristic_add
+const uint8_t NordicBLE::sd_ble_gatts_characteristic_add_cmd = 0xA2;
 void NordicBLE::sd_ble_gatts_characteristic_add(uint16_t service_handle, GattCharProps &char_props, uint8_t uuid_type, uint16_t uuid, byte *user_data, uint16_t data_len) {
 	// TODO:
 	byte data[] = {
@@ -155,7 +183,7 @@ void NordicBLE::sd_ble_gatts_characteristic_add(uint16_t service_handle, GattCha
 		memcpy(&out_data[30], user_data, data_len);
 	}
 	memcpy(&out_data[max_len-1], &flg, 1);
-	this->send_command(0xA2, out_data, max_len);
+	this->send_command(sd_ble_gatts_characteristic_add_cmd, out_data, max_len);
 }
 
  #pragma mark - Private
@@ -164,19 +192,21 @@ void NordicBLE::sd_ble_gatts_characteristic_add(uint16_t service_handle, GattCha
 void NordicBLE::send_command(byte cmd, byte *data, int size) {
 	int len = size + 2;
 	// Debug print
+	#ifdef DEBUG_PRINT
 	if (debug) {
-		Debug.println("\n*Send command");
-		Debug.print("len:");
-		Debug.println(len | (len << 8) & 0xFF, HEX);
-		Debug.print("cmd:");
+		Debug.println(F("\n*Send command"));
+		Debug.print(F("len:"));
+		Debug.println(len | (len << 8) & 0xFF, DEC);
+		Debug.print(F("cmd:"));
 		Debug.println(cmd, HEX);
-		Debug.print("dat:");
+		Debug.print(F("dat:"));
 		for (int i=0; i<size; i++) {
 			Debug.print(data[i], HEX);
-			if (i<size-1) Debug.print(",");
+			if (i<size-1) Debug.print(F(","));
 		}
-		Debug.println("");
+		Debug.println(F(""));
 	}
+	#endif
 	// Packet size
 	serial->write(len);
 	serial->write(len << 8);

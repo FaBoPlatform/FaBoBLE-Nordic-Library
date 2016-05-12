@@ -1,10 +1,14 @@
 #include <Arduino.h>
 #include "utility/NordicBLE.h"
-#include <SoftwareSerial.h>
 
 class FaboBLE : public NordicEventHandler
 {
 public:
+	struct VersionInfo {
+		int8_t lmp;
+		uint16_t companyID;
+		uint16_t firmwareID;
+	};
 	struct ScanData {
 		uint16_t handle;
 		uint8_t addressType;
@@ -16,6 +20,8 @@ public:
 	};
 private:
 	NordicBLE *ble;
+	VersionInfo ver;
+	const char *name;
 public:
 	void nrfReceive(NordicBLE::CommandData &data);
 	#ifdef USE_HARDWARE_SERIAL
@@ -24,14 +30,19 @@ public:
 		FaboBLE(SoftwareSerial &serial);
 	#endif
 	void init(void);
+	void init(const char *name, uint8_t *uuid);
 	void scan(void);
 	void tick(void);
 	void startAdvertise(void);
-	void setBaseUUID(uint8_t *uuid);
 	void addService(uint16_t uuid, bool SIGUUID = false, bool primary = true);
 	void addCharacteristic(uint8_t handle, byte *data, uint8_t dataLen, uint16_t uuid, bool SIGUUID = false);
 	void setDebug(bool flg = true);
 	// event handler
+	void (*onReady)(VersionInfo ver, int8_t error);
+	void (*onConnected)(uint16_t handle);
+	void (*onDisconnected)(uint16_t handle, uint8_t reason);
 	void (*onScanned)(ScanData &data);
 	void (*onServiceAdded)(uint16_t handle, uint8_t error);
+	void (*onCharacteristicAdded)(uint16_t handle, uint8_t error);
+	void (*onWrite)(byte *data, uint8_t len);
 };

@@ -6,6 +6,7 @@
 
 #define NRF_BAUD_RATE 115200
 #define Debug Serial
+#define DEBUG_PRINT
 
 class CommandParser;
 class NordicEventHandler;
@@ -49,13 +50,23 @@ public:
 	//// Softdevice Commands ////
 	void sd_ble_enable(uint8_t service_changed = 0, uint32_t attr_tab_size = 0);
 	void sd_ble_uuid_vs_add(uint8_t *uuid);
+	void sd_ble_version_get();
 	void sd_ble_gap_adv_data_set(byte *adv, uint8_t len);
+	void sd_ble_gap_device_name_set(const char *name);
 	void sd_ble_gap_adv_start();
 	void sd_ble_gap_scan_start();
 	void sd_ble_gatts_service_add(uint8_t service_type, uint8_t uuid_type, uint16_t uuid);
 	void sd_ble_gatts_characteristic_add(uint16_t service_handle, GattCharProps &char_props, uint8_t uuid_type, uint16_t uuid, byte *user_data, uint16_t data_len);
 	// event handler
 	NordicEventHandler *handler;
+	// command
+	static const uint8_t sd_ble_enable_cmd;
+	static const uint8_t sd_ble_uuid_vs_add_cmd;
+	static const uint8_t sd_ble_version_get_cmd;
+	static const uint8_t sd_ble_gap_adv_data_set_cmd;
+	static const uint8_t sd_ble_gap_device_name_set_cmd;
+	static const uint8_t sd_ble_gatts_service_add_cmd;
+	static const uint8_t sd_ble_gatts_characteristic_add_cmd;
 };
 
 class NordicEventHandler
