@@ -33,6 +33,7 @@ public:
 	void init(const char *name, uint8_t *uuid);
 	void scan(void);
 	void tick(void);
+	void setAdvData(byte *data, uint8_t dataLen);
 	void startAdvertise(void);
 	void addService(uint16_t uuid, bool SIGUUID = false, bool primary = true);
 	void addCharacteristic(uint8_t handle, byte *data, uint8_t dataLen, uint16_t uuid, bool SIGUUID = false);
@@ -42,6 +43,7 @@ public:
 	void (*onConnected)(uint16_t handle);
 	void (*onDisconnected)(uint16_t handle, uint8_t reason);
 	void (*onScanned)(ScanData &data);
+	void (*onSetAdvData)(int8_t error);
 	void (*onServiceAdded)(uint16_t handle, uint8_t error);
 	void (*onCharacteristicAdded)(uint16_t handle, uint8_t error);
 	void (*onWrite)(byte *data, uint8_t len);

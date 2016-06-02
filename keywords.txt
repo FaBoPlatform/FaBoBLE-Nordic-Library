@@ -26,6 +26,7 @@ onReady	KEYWORD2
 onConnected	KEYWORD2
 onDisconnected	KEYWORD2
 onScanned	KEYWORD2
+onSetAdvData	KEYWORD2
 onServiceAdded	KEYWORD2
 onCharacteristicAdded	KEYWORD2
 sd_ble_enable	KEYWORD2

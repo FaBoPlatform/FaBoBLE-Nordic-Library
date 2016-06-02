@@ -87,9 +87,10 @@ const uint8_t NordicBLE::sd_ble_gap_adv_data_set_cmd = 0x72;
 void NordicBLE::sd_ble_gap_adv_data_set(byte *adv, uint8_t len) {
 	byte data[len+4];
 	uint8_t flg = 1;
-	memcpy(&data[0], &flg, 1);
-	memcpy(&data[1], &len, 1);
-	memcpy(&data[2], &adv, len);
+	flg = 1;
+	memcpy(&data[0], &len, 1);
+	memcpy(&data[1], &flg, 1);
+	memcpy(&data[2], adv, len);
 	flg = 0;
 	memcpy(&data[len+2], &flg, 1);
 	memcpy(&data[len+3], &flg, 1);

@@ -121,6 +121,11 @@ void FaboBLE::nrfReceive(NordicBLE::CommandData &data) {
 			onReady(ver, data.data[0]);
 		}
 	}
+	if (data.command == NordicBLE::sd_ble_gap_adv_data_set_cmd) {
+		if (onSetAdvData) {
+			onSetAdvData(data.data[0]);
+		}
+	}
 	if (data.command == NordicBLE::sd_ble_uuid_vs_add_cmd) {
 		ble->sd_ble_gap_device_name_set(this->name);
 	}
@@ -179,6 +184,10 @@ void FaboBLE::setDebug(bool flg) {
 
 void FaboBLE::startAdvertise(void) {
 	ble->sd_ble_gap_adv_start();
+}
+
+void FaboBLE::setAdvData(byte *data, uint8_t dataLen) {
+	ble->sd_ble_gap_adv_data_set(data, dataLen);
 }
 
 void FaboBLE::addService(uint16_t uuid, bool SIGUUID, bool primary) {
