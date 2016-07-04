@@ -1,21 +1,24 @@
 # FaBoBLE-Nordic-Library
 
-# FaBoBLE
+This is a library for the FaBo #307 BLE Nordic Serial Brick.
 
-This is a library for FaBo BLE Brick.
+## FaBo BLE Nordic Serial Brick
 
-# BLE
+[#307 BLE Nordic Serial Brick](http://fabo.io/307.html)
 
-Nordic's ble module.
+# MDBT40
 
-# Datasheet
+Nordic NRF51 BLE module.
+
+# MDBT40 Datasheet
 
 [MDBT40 Datasheet](http://www.raytac.com/download/MDBT40/MDBT40%20spec-Version%20A4.pdf)
 
 # Releases
 
 1.0.0 Initial release.
+1.0.1 minor fixes.
 
 # How to install.
 
-[Installing Additional Arduino Libraries](https://www.arduino.cc/en/Guide/Libraries#toc3)
+[Installing Additional Arduino Libraries](https://www.arduino.cc/en/Guide/Libraries)
